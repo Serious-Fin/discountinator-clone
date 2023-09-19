@@ -1,12 +1,10 @@
 //import "./App.css";
-import Auth from "./Auth";
+import AppRouter from "./components/AppRouter.tsx";
 
 function App() {
   return (
     <>
-      <Auth />
-
-      <p>Main program</p>
+      <AppRouter />
     </>
   );
 }
