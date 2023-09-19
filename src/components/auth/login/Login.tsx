@@ -1,5 +1,6 @@
 import { useState } from "react";
 import pb from "../../../lib/pocketbase";
+import { useNavigate, useLocation } from "react-router-dom";
 
 export default function Login() {
   const [email, setEmail] = useState("");
@@ -7,6 +8,10 @@ export default function Login() {
 
   const [isLoading, setLoading] = useState(false);
   const [_dummy, _setDummy] = useState(false);
+
+  const navigate = useNavigate();
+  const location = useLocation();
+  const from = location.state?.from?.pathname || "/";
 
   const handleEmailChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setEmail(e.target.value);
@@ -23,6 +28,7 @@ export default function Login() {
     // Try to log in
     try {
       await pb.collection("users").authWithPassword(email, password);
+      navigate(from, { replace: true }); // redirect user to page they were visiting before
     } catch (error) {
       alert(error);
     }
