@@ -1,6 +1,6 @@
 import { useState } from "react";
 import pb from "../../../lib/pocketbase";
-import { useNavigate, useLocation } from "react-router-dom";
+import { useNavigate, useLocation, Link } from "react-router-dom";
 import styles from "./Login.module.css";
 
 export default function Login() {
@@ -97,6 +97,12 @@ export default function Login() {
             {isLoading ? "Loading..." : "Login"}
           </button>
         </form>
+        <p>
+          Don't have an account?{" "}
+          <Link to="/register" className={styles.link}>
+            Register
+          </Link>
+        </p>
       </div>
     </div>
   );

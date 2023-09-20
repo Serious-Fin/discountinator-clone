@@ -1,6 +1,7 @@
 import { useState } from "react";
 import pb from "../../../lib/pocketbase";
-import { useNavigate, useLocation } from "react-router-dom";
+import { useNavigate, useLocation, Link } from "react-router-dom";
+import styles from "./Register.module.css";
 
 export default function Register() {
   const [email, setEmail] = useState("");
@@ -72,47 +73,69 @@ export default function Register() {
 
   if (pb.authStore.isValid && pb.authStore.model) {
     return (
-      <div>
-        <p>Logged in as {pb.authStore.model.email}</p>
-        <button onClick={handleLogout}>Log out</button>
+      <div className={styles.outer}>
+        <div className={styles.inner}>
+          <p className={styles.underTitle}>
+            Logged in as{" "}
+            <span className={styles.bold}>{pb.authStore.model.email}</span>
+          </p>
+          <button className={styles.exitBtn} onClick={handleLogout}>
+            Log out
+          </button>
+        </div>
       </div>
     );
   }
 
   return (
-    <>
-      {isLoading && <p>Loading...</p>}
+    <div className={styles.outer}>
+      <div className={styles.inner}>
+        <p className={styles.title}>Register</p>
+        <p className={styles.underTitle}>As a new user</p>
 
-      <p>Register</p>
-      <p>A new user</p>
-
-      <form onSubmit={handleRegister}>
-        <input
-          type="email"
-          value={email}
-          onChange={handleEmailChange}
-          placeholder="Email"
-          required
-        />
-        <input
-          type="password"
-          value={password}
-          onChange={handlePasswordChange}
-          placeholder="Password"
-          minLength={5}
-          required
-        />
-        <input
-          type="password"
-          value={confirmPassword}
-          onChange={handleConfirmPasswordChange}
-          placeholder="Confirm Password"
-          minLength={5}
-          required
-        />
-        <p>{errorText}</p>
-        <button type="submit">Register</button>
-      </form>
-    </>
+        <form onSubmit={handleRegister} className={styles.form}>
+          <input
+            className={styles.inputField}
+            type="email"
+            value={email}
+            onChange={handleEmailChange}
+            placeholder="Email"
+            required
+          />
+          <input
+            className={styles.inputField}
+            type="password"
+            value={password}
+            onChange={handlePasswordChange}
+            placeholder="Password"
+            minLength={5}
+            required
+          />
+          <input
+            className={styles.inputField}
+            type="password"
+            value={confirmPassword}
+            onChange={handleConfirmPasswordChange}
+            placeholder="Confirm Password"
+            minLength={5}
+            required
+          />
+          <p className={styles.error}>{errorText}</p>
+          <button
+            type="submit"
+            className={styles.confirmBtn}
+            disabled={isLoading}
+          >
+            {isLoading ? "Loading..." : "Register"}
+          </button>
+        </form>
+        <p>
+          Already have an account?{" "}
+          <Link to="/login" className={styles.link}>
+            Login
+          </Link>
+        </p>
+      </div>
+    </div>
   );
 }
