@@ -1,6 +1,7 @@
 import { useState } from "react";
 import pb from "../../../lib/pocketbase";
 import { useNavigate, useLocation } from "react-router-dom";
+import { ClientResponseError } from "pocketbase";
 
 export default function Login() {
   const [email, setEmail] = useState("");
@@ -8,6 +9,7 @@ export default function Login() {
 
   const [isLoading, setLoading] = useState(false);
   const [_dummy, _setDummy] = useState(false);
+  const [errorText, setErrorText] = useState("");
 
   const navigate = useNavigate();
   const location = useLocation();
@@ -30,7 +32,12 @@ export default function Login() {
       await pb.collection("users").authWithPassword(email, password);
       navigate(from, { replace: true }); // redirect user to page they were visiting before
     } catch (error) {
-      alert(error);
+      console.log(error.response);
+      if (error.response.code < 500) {
+        setErrorText("Incorrect email or password.");
+      } else {
+        setErrorText("A server error occured. Try again later.");
+      }
     }
 
     setLoading(false);
@@ -69,8 +76,10 @@ export default function Login() {
           value={password}
           onChange={handlePasswordChange}
           placeholder="Password"
+          minLength={5}
           required
         />
+        <p>{errorText}</p>
         <button type="submit">Login</button>
       </form>
     </>
