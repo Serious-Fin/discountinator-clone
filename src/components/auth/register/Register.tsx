@@ -6,7 +6,9 @@ export default function Register() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
+
   const [isLoading, setLoading] = useState(false);
+  const [errorText, setErrorText] = useState("");
 
   const navigate = useNavigate();
   const location = useLocation();
@@ -31,6 +33,11 @@ export default function Register() {
     setLoading(true);
 
     // TODO Check if passwords match BEFORE sending to server
+    if (password !== confirmPassword) {
+      setErrorText("Passwords do not match");
+      setLoading(false);
+      return;
+    }
 
     try {
       // Create a new user record
@@ -46,7 +53,13 @@ export default function Register() {
       // redirect user to page they were visiting before
       navigate(from, { replace: true });
     } catch (error) {
-      console.log(error);
+      console.log(error.response);
+
+      if (error.response.code < 500) {
+        setErrorText("User with this email already exists");
+      } else {
+        setErrorText("A server error occured. Try again later.");
+      }
     }
 
     setLoading(false);
@@ -70,7 +83,8 @@ export default function Register() {
     <>
       {isLoading && <p>Loading...</p>}
 
-      <p>REGISTER NOW AND WIN MANY</p>
+      <p>Register</p>
+      <p>A new user</p>
 
       <form onSubmit={handleRegister}>
         <input
@@ -85,6 +99,7 @@ export default function Register() {
           value={password}
           onChange={handlePasswordChange}
           placeholder="Password"
+          minLength={5}
           required
         />
         <input
@@ -92,8 +107,10 @@ export default function Register() {
           value={confirmPassword}
           onChange={handleConfirmPasswordChange}
           placeholder="Confirm Password"
+          minLength={5}
           required
         />
+        <p>{errorText}</p>
         <button type="submit">Register</button>
       </form>
     </>
