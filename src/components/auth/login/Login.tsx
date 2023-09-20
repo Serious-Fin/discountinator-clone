@@ -1,7 +1,6 @@
 import { useState } from "react";
 import pb from "../../../lib/pocketbase";
 import { useNavigate, useLocation } from "react-router-dom";
-import { ClientResponseError } from "pocketbase";
 
 export default function Login() {
   const [email, setEmail] = useState("");
@@ -61,7 +60,8 @@ export default function Login() {
     <>
       {isLoading && <p>Trying to log in...</p>}
 
-      <p>Please please please log in</p>
+      <p>Login</p>
+      <p>As existing user</p>
 
       <form onSubmit={handleLogin}>
         <input
