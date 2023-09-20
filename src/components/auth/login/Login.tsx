@@ -1,6 +1,7 @@
 import { useState } from "react";
 import pb from "../../../lib/pocketbase";
 import { useNavigate, useLocation } from "react-router-dom";
+import styles from "./Login.module.css";
 
 export default function Login() {
   const [email, setEmail] = useState("");
@@ -49,39 +50,54 @@ export default function Login() {
 
   if (pb.authStore.isValid && pb.authStore.model) {
     return (
-      <div>
-        <p>Logged in as {pb.authStore.model.email}</p>
-        <button onClick={handleLogout}>Log out</button>
+      <div className={styles.outer}>
+        <div className={styles.inner}>
+          <p className={styles.underTitle}>
+            Logged in as{" "}
+            <span className={styles.bold}>{pb.authStore.model.email}</span>
+          </p>
+          <button className={styles.exitBtn} onClick={handleLogout}>
+            Log out
+          </button>
+        </div>
       </div>
     );
   }
 
   return (
-    <>
-      {isLoading && <p>Trying to log in...</p>}
+    <div className={styles.outer}>
+      <div className={styles.inner}>
+        <p className={styles.title}>Login</p>
+        <p className={styles.underTitle}>As an existing user</p>
 
-      <p>Login</p>
-      <p>As existing user</p>
-
-      <form onSubmit={handleLogin}>
-        <input
-          type="email"
-          value={email}
-          onChange={handleEmailChange}
-          placeholder="Email"
-          required
-        />
-        <input
-          type="password"
-          value={password}
-          onChange={handlePasswordChange}
-          placeholder="Password"
-          minLength={5}
-          required
-        />
-        <p>{errorText}</p>
-        <button type="submit">Login</button>
-      </form>
-    </>
+        <form onSubmit={handleLogin} className={styles.form}>
+          <input
+            className={styles.inputField}
+            type="email"
+            value={email}
+            onChange={handleEmailChange}
+            placeholder="Email"
+            required
+          />
+          <input
+            className={styles.inputField}
+            type="password"
+            value={password}
+            onChange={handlePasswordChange}
+            placeholder="Password"
+            minLength={5}
+            required
+          />
+          <p className={styles.error}>{errorText}</p>
+          <button
+            className={styles.confirmBtn}
+            type="submit"
+            disabled={isLoading}
+          >
+            {isLoading ? "Loading..." : "Login"}
+          </button>
+        </form>
+      </div>
+    </div>
   );
 }
