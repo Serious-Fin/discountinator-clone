@@ -1,8 +1,14 @@
 import express from "express";
 import cors from "cors";
-import cookieSession from "cookie-session";
-import "dotenv/config";
-import authRoutes from "./api/auth.js";
+//import "dotenv/config";
+import validRoutes from "./api/valid.js";
+import processPath from "process";
+
+import dotenv from "dotenv";
+import path from "path";
+
+const envFilePath = path.resolve(processPath.cwd(), "..", ".env");
+dotenv.config({ path: envFilePath });
 
 const app = express();
 
@@ -10,15 +16,8 @@ const app = express();
 app.use(cors());
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
-/*app.use(
-  cookieSession({
-    name: "augus-session",
-    secret: process.env.COOKIE_SECRET,
-    httpOnly: true, // indicate that cookie is only to be sent via HTTP(S) and not client side JS
-  })
-);*/
 
-app.use("/api/auth", authRoutes);
+app.use("/api/valid", validRoutes);
 
 app.get("/", (req, res) => {
   res.json({ message: "Initial setup looks good" });
