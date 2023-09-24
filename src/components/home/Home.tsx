@@ -9,13 +9,15 @@ export default function Home() {
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    const response = await fetch("http://localhost:3001/api/valid/validPage", {
+    const response = await fetch("http://localhost:3001/api/valid/varlelt", {
       method: "GET",
       headers: {
         "Content-Type": "application/json",
       },
     });
-    console.log(response);
+    const result = await response.json();
+
+    console.log(result);
   };
 
   return (
