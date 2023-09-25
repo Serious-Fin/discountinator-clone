@@ -1,7 +1,7 @@
 import express from "express";
 import cors from "cors";
 //import "dotenv/config";
-import validRoutes from "./api/valid.js";
+import priceRoute from "./api/price.js";
 import processPath from "process";
 
 import dotenv from "dotenv";
@@ -17,7 +17,7 @@ app.use(cors());
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
-app.use("/api/valid", validRoutes);
+app.use("/api/price", priceRoute);
 
 app.get("/", (req, res) => {
   res.json({ message: "Initial setup looks good" });

@@ -1,0 +1,37 @@
+.outer {
+  background-color: red;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 20px 30px;
+}
+
+.inner {
+  background-color: yellow;
+}
+
+.itemContainer {
+  background-color: green;
+  padding: 10px 15px;
+  display: flex;
+}
+
+.name {
+  background-color: purple;
+}
+
+.price {
+  background-color: aqua;
+}
+
+.site_name {
+  background-color: bisque;
+}
+
+.last_check {
+  background-color: brown;
+}
+
+.removeBtn {
+  background-color: orange;
+}
