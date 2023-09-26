@@ -17,8 +17,10 @@ export default function Home() {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const response = await pb.collection("items").getFullList();
-        setItems(response);
+        const response = await pb.collection("items").getList(1, 30, {
+          filter: `user_id = "` + pb.authStore.model.id + `"`,
+        });
+        setItems(response.items);
       } catch (error) {
         console.error("Error fetching data:", error);
       }
