@@ -47,15 +47,40 @@ export default function Home() {
     console.log(result.message);
   };
 
+  const formatDate = (date: string) => {
+    const dateTime = date.split(".")[0];
+    return dateTime;
+  };
+
+  const formatPrice = (price: string) => {
+    return price + " €";
+  };
+
   return (
     <div className={styles.outer}>
       <div className={styles.inner}>
         {items.map((item) => (
           <div key={item.id} className={styles.itemContainer}>
-            <p className={styles.name}>{item.name}</p>
-            <p className={styles.price}>{item.price}</p>
-            <p className={styles.site_name}>{item.site_name}</p>
-            <p className={styles.last_check}>{item.last_check}</p>
+            <div className={styles.name}>
+              <p className={styles.header}>Item name</p>
+              <p>{item.name}</p>
+            </div>
+
+            <div className={styles.price}>
+              <p className={styles.header}>Price</p>
+              <p>{formatPrice(item.price)}</p>
+            </div>
+
+            <div className={styles.site_name}>
+              <p className={styles.header}>Vendor</p>
+              <p>{item.site_name}</p>
+            </div>
+
+            <div className={styles.last_check}>
+              <p className={styles.header}>Last Updated</p>
+              <p id="lastCheck">{formatDate(item.last_check)}</p>
+            </div>
+
             <button className={styles.removeBtn}>Remove</button>
           </div>
         ))}
