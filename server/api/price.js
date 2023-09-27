@@ -23,7 +23,7 @@ router.post("/pigu", async (req, res) => {
       .json({ price: priceNormalized, name: productNameExtracted });
   } catch (error) {
     console.error("Error:", error);
-    res.status(500).json({ error: "Internal Server Error" });
+    res.status(500).json({ error: "Internal Server Error reading Pigu" });
   }
 });
 
@@ -42,7 +42,7 @@ router.post("/varle", async (req, res) => {
       .json({ price: priceNormalized, name: productNameExtracted });
   } catch (error) {
     console.error("Error:", error);
-    res.status(500).json({ error: "Internal Server Error" });
+    res.status(500).json({ error: "Internal Server Error reading Varle" });
   }
 });
 
@@ -62,7 +62,7 @@ router.post("/skytech", async (req, res) => {
       .json({ price: priceNormalized, name: productNameExtracted });
   } catch (error) {
     console.error("Error:", error);
-    res.status(500).json({ error: "Internal Server Error" });
+    res.status(500).json({ error: "Internal Server Error reading SkyTech" });
   }
 });
 

@@ -34,7 +34,7 @@ export default function Home() {
     };
 
     fetchData();
-  }, [refresh]);
+  }, [refresh, items]);
 
   const handleLinkChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setItemLink(e.target.value);
@@ -124,8 +124,8 @@ export default function Home() {
   const updateRecords = async () => {
     setLoading(true);
 
-    items.forEach(async (item) => {
-      try {
+    try {
+      items.forEach(async (item) => {
         // get new price
         const response = await fetch(
           `http://localhost:3001/api/price/` + item.site_name,
@@ -148,13 +148,13 @@ export default function Home() {
           price: result.price,
           last_check: currentUtcTime,
         });
-      } catch (error) {
-        console.error("Error: ", error);
-        setError(error.message);
-      }
-    });
 
-    setRefresh(!refresh);
+        setRefresh(!refresh);
+      });
+    } catch (error) {
+      console.error("Error while updating: ", error);
+    }
+
     setLoading(false);
   };
 
