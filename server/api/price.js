@@ -4,7 +4,7 @@ import axios from "axios";
 
 const router = express.Router();
 
-router.post("/pigult", async (req, res) => {
+router.post("/pigu", async (req, res) => {
   try {
     const response = await axios.get(req.body.url);
 
@@ -16,14 +16,18 @@ router.post("/pigult", async (req, res) => {
       .match(/\d+/)[0];
     const priceNormalized = parseFloat(productPriceExtracted) / 100;
 
-    res.status(200).json({ message: priceNormalized });
+    const productNameExtracted = $("h1.c-product__name").text();
+
+    res
+      .status(200)
+      .json({ price: priceNormalized, name: productNameExtracted });
   } catch (error) {
     console.error("Error:", error);
     res.status(500).json({ error: "Internal Server Error" });
   }
 });
 
-router.post("/varlelt", async (req, res) => {
+router.post("/varle", async (req, res) => {
   try {
     const response = await axios.get(req.body.url);
 
@@ -31,7 +35,11 @@ router.post("/varlelt", async (req, res) => {
     const productPriceExtracted = $("span.price-value").attr("content");
     const priceNormalized = parseFloat(productPriceExtracted);
 
-    res.status(200).json({ message: priceNormalized });
+    const productNameExtracted = $('h2[itemprop="name"]').text();
+
+    res
+      .status(200)
+      .json({ price: priceNormalized, name: productNameExtracted });
   } catch (error) {
     console.error("Error:", error);
     res.status(500).json({ error: "Internal Server Error" });
@@ -47,7 +55,11 @@ router.post("/skytech", async (req, res) => {
     const productPriceExtracted = $("span.num > span").text().split("€")[0];
     const priceNormalized = parseFloat(productPriceExtracted);
 
-    res.status(200).json({ message: priceNormalized });
+    const productNameExtracted = $("div.product-name > h1").text();
+
+    res
+      .status(200)
+      .json({ price: priceNormalized, name: productNameExtracted });
   } catch (error) {
     console.error("Error:", error);
     res.status(500).json({ error: "Internal Server Error" });

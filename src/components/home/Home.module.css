@@ -74,6 +74,11 @@
   border-radius: 3px;
 }
 
+.removeBtn:hover {
+  background-color: rgba(97, 7, 7, 0.712);
+  color: aliceblue;
+}
+
 .last_check > p[id="lastCheck"] {
   margin-top: 10px;
 }

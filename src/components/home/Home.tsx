@@ -1,6 +1,8 @@
 import { useEffect, useState } from "react";
 import pb from "./../../lib/pocketbase";
 import styles from "./Home.module.css";
+import { formatDate, formatPrice } from "../../helpers/formats";
+import matchHost from "../../helpers/matchHost";
 
 type RecordModel = {
   id: string;
@@ -13,6 +15,11 @@ type RecordModel = {
 export default function Home() {
   const [itemLink, setItemLink] = useState("");
   const [items, setItems] = useState<RecordModel[]>([]);
+
+  const [error, setError] = useState("");
+  const [isLoading, setLoading] = useState(false);
+
+  const [refresh, setRefresh] = useState(false);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -27,35 +34,128 @@ export default function Home() {
     };
 
     fetchData();
-  }, []);
+  }, [refresh]);
 
   const handleLinkChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setItemLink(e.target.value);
   };
 
+  const createItemRecord = async (
+    name: string,
+    price: number,
+    site_name: string,
+    site_link: string,
+    last_check: string,
+    user_id: string
+  ) => {
+    const data = {
+      name: name,
+      price: price,
+      site_name: site_name,
+      site_link: site_link,
+      last_check: last_check,
+      user_id: user_id,
+    };
+
+    try {
+      await pb.collection("items").create(data);
+    } catch (e) {
+      console.error("Error: ", e);
+    }
+  };
+
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    const response = await fetch("http://localhost:3001/api/price/skytech", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({
-        url: itemLink,
-      }),
+    setLoading(true);
+    setError("");
+
+    const host = matchHost(itemLink);
+
+    if (host == "Invalid link" || host == "No match found") {
+      setLoading(false);
+      setItemLink("");
+      setError("Make sure it's a valid varle.lt, pigu.lt or skytech.lt link");
+      return;
+    }
+
+    const extractHost = host.split(".")[0];
+
+    try {
+      const response = await fetch(
+        `http://localhost:3001/api/price/` + extractHost,
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            url: itemLink,
+          }),
+        }
+      );
+      const result = await response.json();
+      const currentUtcTime = new Date().toUTCString();
+
+      createItemRecord(
+        result.name,
+        result.price,
+        extractHost,
+        itemLink,
+        currentUtcTime,
+        pb.authStore.model.id
+      );
+      setRefresh(!refresh);
+      console.log(result.message);
+    } catch (error) {
+      setLoading(false);
+      setError(error.message);
+      setItemLink("");
+    }
+
+    setLoading(false);
+    setItemLink("");
+  };
+
+  const handleDelete = (record_id: string) => {
+    pb.collection("items").delete(record_id);
+    setRefresh(!refresh);
+  };
+
+  const updateRecords = async () => {
+    setLoading(true);
+
+    items.forEach(async (item) => {
+      try {
+        // get new price
+        const response = await fetch(
+          `http://localhost:3001/api/price/` + item.site_name,
+          {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify({
+              url: item.site_link,
+            }),
+          }
+        );
+        const result = await response.json();
+        const currentUtcTime = new Date().toUTCString();
+
+        // update with new price
+        await pb.collection("items").update(item.id, {
+          name: result.name,
+          price: result.price,
+          last_check: currentUtcTime,
+        });
+      } catch (error) {
+        console.error("Error: ", error);
+        setError(error.message);
+      }
     });
-    const result = await response.json();
 
-    console.log(result.message);
-  };
-
-  const formatDate = (date: string) => {
-    const dateTime = date.split(".")[0];
-    return dateTime;
-  };
-
-  const formatPrice = (price: string) => {
-    return price + " €";
+    setRefresh(!refresh);
+    setLoading(false);
   };
 
   return (
@@ -83,7 +183,12 @@ export default function Home() {
               <p id="lastCheck">{formatDate(item.last_check)}</p>
             </div>
 
-            <button className={styles.removeBtn}>Remove</button>
+            <button
+              className={styles.removeBtn}
+              onClick={() => handleDelete(item.id)}
+            >
+              Remove
+            </button>
           </div>
         ))}
       </div>
@@ -97,6 +202,11 @@ export default function Home() {
         />
         <button type="submit">Add item</button>
       </form>
+      <p>{error}</p>
+      {isLoading && <p>Loading...</p>}
+      <button onClick={updateRecords} disabled={isLoading}>
+        Refresh
+      </button>
     </div>
   );
 }
