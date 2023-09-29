@@ -2,6 +2,7 @@ import express from "express";
 import cors from "cors";
 //import "dotenv/config";
 import priceRoute from "./api/price.js";
+import "./cronJobs/priceChecker.js";
 import processPath from "process";
 
 import dotenv from "dotenv";
