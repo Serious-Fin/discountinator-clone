@@ -69,6 +69,12 @@ export default function Home() {
     setLoading(true);
     setError("");
 
+    if (items.length >= 10) {
+      setLoading(false);
+      setError("Maximum item count reached");
+      return;
+    }
+
     const host = matchHost(itemLink);
 
     if (host == "Invalid link" || host == "No match found") {
@@ -160,6 +166,31 @@ export default function Home() {
 
   return (
     <div className={styles.outer}>
+      <div className={styles.navbar}>
+        <p className={styles.counter}>{items.length}/10 items</p>
+
+        <form onSubmit={handleSubmit} className={styles.form}>
+          <input
+            type="text"
+            maxLength={2000}
+            value={itemLink}
+            onChange={handleLinkChange}
+            className={styles.input}
+          />
+          <button type="submit" disabled={isLoading} className={styles.refresh}>
+            Add item
+          </button>
+          <p className={styles.error}>{error}</p>
+        </form>
+
+        <button
+          onClick={updateRecords}
+          disabled={isLoading}
+          className={styles.refresh}
+        >
+          Refresh
+        </button>
+      </div>
       <div className={styles.inner}>
         {items.map((item) => (
           <div key={item.id} className={styles.itemContainer}>
@@ -186,6 +217,7 @@ export default function Home() {
             <button
               className={styles.removeBtn}
               onClick={() => handleDelete(item.id)}
+              disabled={isLoading}
             >
               Remove
             </button>
@@ -193,20 +225,7 @@ export default function Home() {
         ))}
       </div>
 
-      <form onSubmit={handleSubmit}>
-        <input
-          type="text"
-          maxLength={2000}
-          value={itemLink}
-          onChange={handleLinkChange}
-        />
-        <button type="submit">Add item</button>
-      </form>
-      <p>{error}</p>
       {isLoading && <p>Loading...</p>}
-      <button onClick={updateRecords} disabled={isLoading}>
-        Refresh
-      </button>
     </div>
   );
 }

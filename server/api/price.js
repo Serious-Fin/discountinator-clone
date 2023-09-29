@@ -9,9 +9,7 @@ router.post("/pigu", async (req, res) => {
     const response = await axios.get(req.body.url);
 
     const $ = cheerio.load(response.data);
-    const productPriceExtracted = $(
-      "div.c-price.h-price--xx-large.h-price--new"
-    )
+    const productPriceExtracted = $("div.c-price.h-price--xx-large")
       .text()
       .match(/\d+/)[0];
     const priceNormalized = parseFloat(productPriceExtracted) / 100;
