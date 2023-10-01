@@ -21,6 +21,8 @@ export default function Home() {
 
   const [refresh, setRefresh] = useState(false);
 
+  const [isVerified, setIsVerified] = useState(false);
+
   useEffect(() => {
     const fetchData = async () => {
       try {
@@ -33,7 +35,16 @@ export default function Home() {
       }
     };
 
-    fetchData();
+    const checkVerification = async () => {
+      const id = pb.authStore.model.id;
+      const userdata = await pb.collection("users").getOne(id);
+      setIsVerified(userdata.verified);
+    };
+
+    checkVerification();
+    if (isVerified) {
+      fetchData();
+    }
   }, [refresh]);
 
   const handleLinkChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -166,6 +177,16 @@ export default function Home() {
       .then(() => setRefresh((prev) => !prev))
       .then(() => setLoading(false));
   };
+
+  if (!isVerified) {
+    return (
+      <div className={styles.outer}>
+        <div className={styles.inner}>
+          <p>Please verify your email address</p>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className={styles.outer}>

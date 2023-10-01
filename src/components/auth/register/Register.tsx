@@ -48,6 +48,9 @@ export default function Register() {
         passwordConfirm: confirmPassword,
       });
 
+      // Send email verification link
+      await pb.collection("users").requestVerification(email);
+
       // Log new user in
       await pb.collection("users").authWithPassword(email, password);
 
