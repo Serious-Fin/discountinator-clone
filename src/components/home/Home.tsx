@@ -34,7 +34,7 @@ export default function Home() {
     };
 
     fetchData();
-  }, [refresh, items]);
+  }, [refresh]);
 
   const handleLinkChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setItemLink(e.target.value);
@@ -128,10 +128,8 @@ export default function Home() {
   };
 
   const updateRecords = async () => {
-    setLoading(true);
-
     try {
-      items.forEach(async (item) => {
+      const asyncOperations = items.map(async (item) => {
         // get new price
         const response = await fetch(
           `http://localhost:3001/api/price/` + item.site_name,
@@ -154,14 +152,19 @@ export default function Home() {
           price: result.price,
           last_check: currentUtcTime,
         });
-
-        setRefresh(!refresh);
       });
+
+      await Promise.all(asyncOperations);
     } catch (error) {
       console.error("Error while updating: ", error);
     }
+  };
 
-    setLoading(false);
+  const handleRefresh = () => {
+    setLoading(true);
+    updateRecords()
+      .then(() => setRefresh((prev) => !prev))
+      .then(() => setLoading(false));
   };
 
   return (
@@ -184,7 +187,7 @@ export default function Home() {
         </form>
 
         <button
-          onClick={updateRecords}
+          onClick={handleRefresh}
           disabled={isLoading}
           className={styles.refresh}
         >
