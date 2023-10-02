@@ -30,6 +30,6 @@ TODO:
 
 - email authentication
 - OAuth2 with GitHub
+- improve UI: instructions when no items, better navbar
 
-* improve UI: instructions when no items, better navbar
 * notify user when price changes (email provider)
