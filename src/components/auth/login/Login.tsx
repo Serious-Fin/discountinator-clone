@@ -23,6 +23,19 @@ export default function Login() {
     setPassword(e.target.value);
   };
 
+  const handleGithubAuth = async () => {
+    setLoading(true);
+    await pb
+      .collection("users")
+      .authWithOAuth2({ provider: "github" })
+      .then(() => {
+        navigate(from, { replace: true });
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+  };
+
   const handleLogin = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     setLoading(true);
@@ -97,6 +110,9 @@ export default function Login() {
             {isLoading ? "Loading..." : "Login"}
           </button>
         </form>
+        <button onClick={handleGithubAuth} className={styles.github}>
+          Login via GitHub
+        </button>
         <p>
           Don't have an account?{" "}
           <Link to="/register" className={styles.link}>

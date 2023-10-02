@@ -86,3 +86,14 @@
   color: rgb(33, 11, 238);
   font-weight: 500;
 }
+
+.github {
+  width: 150px;
+  font-size: 1rem;
+  padding: 5px 10px;
+  border: 1px solid rgba(0, 0, 0, 0.438);
+  border-radius: 5px;
+  background-color: rgba(0, 0, 0, 0.801);
+  margin-bottom: 20px;
+  color: white;
+}

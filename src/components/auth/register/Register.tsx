@@ -29,6 +29,19 @@ export default function Register() {
     setConfirmPassword(e.target.value);
   };
 
+  const handleGithubAuth = async () => {
+    setLoading(true);
+    await pb
+      .collection("users")
+      .authWithOAuth2({ provider: "github" })
+      .then(() => {
+        navigate(from, { replace: true });
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+  };
+
   const handleRegister = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     setLoading(true);
@@ -50,6 +63,7 @@ export default function Register() {
 
       // Send email verification link
       await pb.collection("users").requestVerification(email);
+      alert("Verification email sent. Please check your inbox.");
 
       // Log new user in
       await pb.collection("users").authWithPassword(email, password);
@@ -132,6 +146,9 @@ export default function Register() {
             {isLoading ? "Loading..." : "Register"}
           </button>
         </form>
+        <button onClick={handleGithubAuth} className={styles.github}>
+          Login via GitHub
+        </button>
         <p>
           Already have an account?{" "}
           <Link to="/login" className={styles.link}>
