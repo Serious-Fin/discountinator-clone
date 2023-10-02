@@ -42,9 +42,7 @@ export default function Home() {
     };
 
     checkVerification();
-    if (isVerified) {
-      fetchData();
-    }
+    fetchData();
   }, [refresh]);
 
   const handleLinkChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -122,7 +120,6 @@ export default function Home() {
         pb.authStore.model.id
       );
       setRefresh(!refresh);
-      console.log(result.message);
     } catch (error) {
       setLoading(false);
       setError(error.message);
@@ -200,6 +197,7 @@ export default function Home() {
             value={itemLink}
             onChange={handleLinkChange}
             className={styles.input}
+            placeholder="Enter link"
           />
           <button type="submit" disabled={isLoading} className={styles.refresh}>
             Add item
@@ -216,37 +214,66 @@ export default function Home() {
         </button>
       </div>
       <div className={styles.inner}>
-        {items.map((item) => (
-          <div key={item.id} className={styles.itemContainer}>
-            <div className={styles.name}>
-              <p className={styles.header}>Item name</p>
-              <p>{item.name}</p>
-            </div>
+        {items.length > 0 ? (
+          items.map((item) => (
+            <div key={item.id} className={styles.itemContainer}>
+              <div className={styles.name}>
+                <p className={styles.header}>Item name</p>
+                <p>{item.name}</p>
+              </div>
 
-            <div className={styles.price}>
-              <p className={styles.header}>Price</p>
-              <p>{formatPrice(item.price)}</p>
-            </div>
+              <div className={styles.price}>
+                <p className={styles.header}>Price</p>
+                <p>{formatPrice(item.price)}</p>
+              </div>
 
-            <div className={styles.site_name}>
-              <p className={styles.header}>Vendor</p>
-              <p>{item.site_name}</p>
-            </div>
+              <div className={styles.site_name}>
+                <p className={styles.header}>Vendor</p>
+                <p>{item.site_name}</p>
+              </div>
 
-            <div className={styles.last_check}>
-              <p className={styles.header}>Last Updated</p>
-              <p id="lastCheck">{formatDate(item.last_check)}</p>
-            </div>
+              <div className={styles.last_check}>
+                <p className={styles.header}>Last Updated</p>
+                <p id="lastCheck">{formatDate(item.last_check)}</p>
+              </div>
 
-            <button
-              className={styles.removeBtn}
-              onClick={() => handleDelete(item.id)}
-              disabled={isLoading}
-            >
-              Remove
-            </button>
+              <button
+                className={styles.removeBtn}
+                onClick={() => handleDelete(item.id)}
+                disabled={isLoading}
+              >
+                Remove
+              </button>
+            </div>
+          ))
+        ) : (
+          <div className={styles.empty}>
+            <p>No items are being tracked.</p>
+            <p>To add a new item paste a link into the above field.</p>
+            <p>Link from these websites currently work:</p>
+            <ul>
+              <li>
+                <a href="https://pigu.lt/lt/" target="_blank">
+                  Pigu.lt
+                </a>
+              </li>
+              <li>
+                <a href="https://www.varle.lt/" target="_blank">
+                  Varle.lt
+                </a>
+              </li>
+              <li>
+                <a href="https://www.skytech.lt/" target="_blank">
+                  Skytech.lt
+                </a>
+              </li>
+            </ul>
+            <p>
+              Simply find an item you like, copy the page URL, paste into the
+              above field and click "Add Item"
+            </p>
           </div>
-        ))}
+        )}
       </div>
 
       {isLoading && <p>Loading...</p>}

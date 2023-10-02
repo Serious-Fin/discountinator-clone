@@ -29,8 +29,7 @@ If you are developing a production application, we recommend updating the config
 TODO:
 
 - email authentication
+- OAuth2 with GitHub
 
-* OAuth2 with GitHub and Google
-* Forgot password
 * improve UI: instructions when no items, better navbar
 * notify user when price changes (email provider)
