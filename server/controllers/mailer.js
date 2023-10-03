@@ -1,4 +1,10 @@
 import nodemailer from "nodemailer";
+import dotenv from "dotenv";
+import path from "path";
+import processPath from "process";
+
+const envFilePath = path.resolve(processPath.cwd(), "..", "..", ".env");
+dotenv.config({ path: envFilePath });
 
 const sendPriceChangeMail = async (receiver_email, item, new_price) => {
   let transporter = nodemailer.createTransport({
@@ -6,8 +12,8 @@ const sendPriceChangeMail = async (receiver_email, item, new_price) => {
     port: 587,
     secure: false,
     auth: {
-      user: "augustasgri@gmail.com",
-      pass: "k5KyXpDnAIjxZRN2",
+      user: process.env.MAILER_EMAIL,
+      pass: process.env.MAILER_PASSWORD,
     },
   });
 
