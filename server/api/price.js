@@ -33,7 +33,9 @@ router.post("/varle", async (req, res) => {
     const productPriceExtracted = $("span.price-value").attr("content");
     const priceNormalized = parseFloat(productPriceExtracted);
 
-    const productNameExtracted = $('h2[itemprop="name"]').text();
+    const productNameExtracted = $(
+      'div.for-desktop h2[itemprop="name"]'
+    ).text();
 
     res
       .status(200)

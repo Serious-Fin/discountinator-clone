@@ -1,14 +1,36 @@
 import pb from "../lib/pocketbase.js";
+import { sendPriceChangeMail } from "./mailer.js";
+import dotenv from "dotenv";
+import path from "path";
+import processPath from "process";
+
+const envFilePath = path.resolve(processPath.cwd(), "..", "..", ".env");
+dotenv.config({ path: envFilePath });
 
 const checkItemPrices = async () => {
   // get all items
   const response = await pb.collection("items").getFullList();
+
+  // authenticate as admin
+  const token = await pb.admins.authWithPassword(
+    process.env.PB_ADMIN_EMAIL,
+    process.env.PB_ADMIN_PASSWORD
+  );
 
   // for each item -> check price and update
   response.forEach(async (item) => {
     try {
       // get new price
       const result = await fetchNewData(item);
+
+      // check whether price has decreased
+      if (result.price < item.price) {
+        await pb
+          .collection("users")
+          .getOne(item.user_id)
+          .then((user) => user.email)
+          .then((email) => sendPriceChangeMail(email, item, result.price));
+      }
 
       // update data
       postNewData(item.id, result);
