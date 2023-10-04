@@ -23,8 +23,8 @@ const sendPriceChangeMail = async (receiver_email, item, new_price) => {
     subject: "Price change alert",
     text: `Hey, an item you subscribed to became cheaper!\n
             Item name: ${item.name}\n 
-            New Price: ${new_price}\n 
-            Old Price: ${item.price}\n
+            New Price: ${new_price} €\n 
+            Old Price: ${item.price} €\n
             Link: ${item.site_link}\n`,
   };
 

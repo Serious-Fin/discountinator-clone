@@ -23,6 +23,8 @@ const checkItemPrices = async () => {
       // get new price
       const result = await fetchNewData(item);
 
+      result.price = 10;
+
       // check whether price has decreased
       if (result.price < item.price) {
         await pb
