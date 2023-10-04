@@ -44,7 +44,7 @@ export default function Login() {
     try {
       await pb.collection("users").authWithPassword(email, password);
       navigate(from, { replace: true }); // redirect user to page they were visiting before
-    } catch (error) {
+    } catch (error: any) {
       console.log(error.response);
       if (error.response.code < 500) {
         setErrorText("Incorrect email or password.");

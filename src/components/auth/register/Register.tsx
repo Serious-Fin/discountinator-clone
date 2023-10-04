@@ -70,7 +70,7 @@ export default function Register() {
 
       // redirect user to page they were visiting before
       navigate(from, { replace: true });
-    } catch (error) {
+    } catch (error: any) {
       console.log(error.response);
 
       if (error.response.code < 500) {

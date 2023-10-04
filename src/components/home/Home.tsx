@@ -4,17 +4,9 @@ import styles from "./Home.module.css";
 import { formatDate, formatPrice } from "../../helpers/formats";
 import matchHost from "../../helpers/matchHost";
 
-type RecordModel = {
-  id: string;
-  name: string;
-  price: number;
-  site_name: string;
-  site_link: string;
-};
-
 export default function Home() {
   const [itemLink, setItemLink] = useState("");
-  const [items, setItems] = useState<RecordModel[]>([]);
+  const [items, setItems] = useState<any[]>([]);
 
   const [error, setError] = useState("");
   const [isLoading, setLoading] = useState(false);
@@ -26,6 +18,10 @@ export default function Home() {
   useEffect(() => {
     const fetchData = async () => {
       try {
+        if (pb.authStore.model == null) {
+          return;
+        }
+
         const response = await pb.collection("items").getList(1, 30, {
           filter: `user_id = "` + pb.authStore.model.id + `"`,
         });
@@ -36,6 +32,9 @@ export default function Home() {
     };
 
     const checkVerification = async () => {
+      if (pb.authStore.model == null) {
+        return;
+      }
       const id = pb.authStore.model.id;
       const userdata = await pb.collection("users").getOne(id);
       setIsVerified(userdata.verified);
@@ -111,6 +110,10 @@ export default function Home() {
       const result = await response.json();
       const currentUtcTime = new Date().toUTCString();
 
+      if (pb.authStore.model == null) {
+        return;
+      }
+
       createItemRecord(
         result.name,
         result.price,
@@ -120,7 +123,7 @@ export default function Home() {
         pb.authStore.model.id
       );
       setRefresh(!refresh);
-    } catch (error) {
+    } catch (error: any) {
       setLoading(false);
       setError(error.message);
       setItemLink("");
@@ -224,7 +227,7 @@ export default function Home() {
 
               <div className={styles.price}>
                 <p className={styles.header}>Price</p>
-                <p>{formatPrice(item.price)}</p>
+                <p>{formatPrice(item.price.toString())}</p>
               </div>
 
               <div className={styles.site_name}>
