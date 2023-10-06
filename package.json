@@ -8,7 +8,7 @@
     "build": "tsc && vite build",
     "lint": "eslint . --ext ts,tsx --report-unused-disable-directives --max-warnings 0",
     "preview": "vite preview",
-    "start": "tsc && vite build ** ./database/pocketbase serve"
+    "start": "tsc && vite build && ./database/pocketbase serve && ./server node index.js"
   },
   "dependencies": {
     "pocketbase": "^0.18.0",
